@@ -28,7 +28,7 @@ import com.alex.datajpa.app.models.services.IClientService;
 
 
 // @Secured("ROLE_ADMIN")    // se aplica a todos los handlers de este controller  -- Me da error al protegerla asi
-// @PreAuthorize("hasRole('ROLE_ADMIN')")       // igual me da error - lo mismo q el @Secured
+// @PreAuthorize("hasRole('ROLE_ADMIN')")       // igual me da error - lo mismo q el @Secured al usarlo en toda la class
 @Controller
 @RequestMapping("/invoice")
 @SessionAttributes("invoice") // mantener en session y pasar a la view hasta q se persista la factura
