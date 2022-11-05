@@ -1,5 +1,6 @@
 package com.alex.datajpa.app;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,10 +10,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.alex.datajpa.app.auth.handler.LoginSuccessHandler;
+
 // // W en memoria, NO a production
 // en la version actualizada de spring boot ya NO extends de ...Adapter q esta deprecated
 @Configuration
 public class SpringSecurityConfig {
+
+    @Autowired
+    private LoginSuccessHandler successHandler;
+
 
     @Bean
     public static BCryptPasswordEncoder passwordEncoder() {
@@ -44,11 +51,14 @@ public class SpringSecurityConfig {
                 .anyRequest().authenticated()
                 .and()
                 // .formLogin().permitAll() // envia la pag login de spring security cuando no esta auth
-                .formLogin().loginPage("/login").permitAll() // la manejamos nosotros con nuestro login controller
+                    .formLogin()
+                        .successHandler(successHandler)     // pasar el mensaje flash de login success desde otro package
+                        .loginPage("/login")
+                    .permitAll() // la manejamos nosotros con nuestro login controller
                 .and()
-                .logout().permitAll()
+                    .logout().permitAll()
                 .and()
-                .exceptionHandling().accessDeniedPage("/error-403")    // manejamos la pagina de error
+                    .exceptionHandling().accessDeniedPage("/error-403")    // manejamos la pagina de error
                 ;
 
         return http.build();

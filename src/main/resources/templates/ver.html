@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.thymeleaf.org">
+<html
+  lang="en"
+  xmlns="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
   <!-- Usar el fragment del layout con Thymeleaf ||  el root de las view es /templates -->
   <head th:replace="layout/layout :: head"></head>
   <body>
@@ -13,7 +17,10 @@
         </div>
 
         <div class="card-body">
-          <div class="d-flex flex-row-reverse">
+          <div
+            class="d-flex flex-row-reverse"
+            sec:authorize="hasRole('ROLE_ADMIN')"
+          >
             <a
               th:href="@{/invoice/form/} + ${client.id}"
               class="btn btn-primary btn-xs mb-4"
@@ -37,7 +44,7 @@
           </div>
 
           <div>
-            <!--  -->
+            <!-- Invoices -->
             <div
               th:if="${#lists.isEmpty(client.invoices)}"
               class="alert alert-info my-4"
@@ -53,8 +60,8 @@
                   <th>description</th>
                   <th>date</th>
                   <th>total</th>
-                  <th>View</th>
-                  <th>Delete</th>
+                  <th sec:authorize="hasRole('ROLE_ADMIN')">View</th>
+                  <th sec:authorize="hasRole('ROLE_ADMIN')">Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -63,14 +70,14 @@
                   <td th:text="${invoice.description}"></td>
                   <td th:text="${invoice.createdAt}"></td>
                   <td th:text="${invoice.total}"></td>
-                  <td>
+                  <td sec:authorize="hasRole('ROLE_ADMIN')">
                     <a
                       th:href="@{'/invoice/ver/' + ${invoice.id}}"
                       class="btn btn-light btn-xs border"
                       >View details</a
                     >
                   </td>
-                  <td>
+                  <td sec:authorize="hasRole('ROLE_ADMIN')">
                     <a
                       th:href="@{'/invoice/delete/' + ${invoice.id}}"
                       class="btn btn-danger btn-xs"

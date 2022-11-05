@@ -2,9 +2,13 @@ package com.alex.datajpa.app.controllers;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Collection;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -23,6 +27,12 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 
 import com.alex.datajpa.app.models.entity.Client;
 import com.alex.datajpa.app.models.services.IClientService;
@@ -39,6 +49,9 @@ import com.alex.datajpa.app.util.paginator.PageRender;
 @SessionAttributes("client")
 public class ClientController {
   
+  // logs
+  private final Logger log = LoggerFactory.getLogger(getClass());
+
   @Autowired
   // @Qualifier("clientDaoJPA")
   private IClientService clientService;
@@ -81,9 +94,9 @@ public class ClientController {
     return "ver";
   }
 
-  
-  @GetMapping({"/listar", ""})
-  public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model) {
+  @GetMapping({ "/listar", "" })
+  public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model,
+      Authentication authentication, HttpServletRequest request) {
 
     // Paginado:
     Pageable pageRequest = PageRequest.of(page, 5);
@@ -92,18 +105,47 @@ public class ClientController {
     PageRender<Client> pageRender = new PageRender<>("/listar", clients); // pasamos la url
     model.addAttribute("page", pageRender);
 
-
     model.addAttribute("title", "Client List");
     model.addAttribute("clients", clients);
+
+    
+    // // NO lo utiliza en nada
+    //  obtener el user auth 1) inyect en el methos y 2) con el SecurityContextHolder <- asi lo puedes obtener en donde sea
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if(authentication != null) {
+      // podriamos hacer algo
+    }
+
+    // verificar role en el controller - manual
+    if (hasRole("ROLE_ADMIN")) {
+      log.info("Hola ".concat(auth.getName()).concat(" tienes acceso!"));
+    } else {
+      log.info("Hola ".concat(auth.getName()).concat(" NO tienes acceso!"));
+    }
+
+    // otra forma inject HttpServletRequest & SecurityContextHolderAwareRequestWrapper
+    SecurityContextHolderAwareRequestWrapper securityContext = new SecurityContextHolderAwareRequestWrapper(request, "");
+    if (securityContext.isUserInRole("ROLE_ADMIN")) {  // ADMIN por el rolePrefix
+      log.info("Usando SecurityContextHolderAwareRequestWrapper --> Hola ".concat(auth.getName()).concat(" tienes acceso!"));
+    } else {
+      log.info("Usando SecurityContextHolderAwareRequestWrapper --> Hola ".concat(auth.getName()).concat(" NO tienes acceso!"));
+    }
+
+    // otra inject HttpServletRequest 
+    if (request.isUserInRole("ROLE_ADMIN")) {  // ADMIN por el rolePrefix
+      log.info("Usando Solor el Request --> Hola ".concat(auth.getName()).concat(" tienes acceso!"));
+    } else {
+      log.info("Usando Solor el Request --> Hola ".concat(auth.getName()).concat(" NO tienes acceso!"));
+    }
+
 
     return "listar";
   }
 
-
-  @GetMapping(value="/form")
+  @GetMapping(value = "/form")
   public String crear(Model model) {
     Client client = new Client();
-    
+
     model.addAttribute("title", "Form user");
     model.addAttribute("client", client);
 
@@ -203,5 +245,29 @@ public class ClientController {
   }
   
 
+  // Verificar si tiene el role en el Controller  <-  hasta el momento NO hace nada con eso
+  private boolean hasRole(String role) {
+    SecurityContext context = SecurityContextHolder.getContext();
+    if (context == null) return false;
+
+    Authentication auth = context.getAuthentication();
+    if (auth == null) return false;
+    
+    Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+
+    return authorities.contains(new SimpleGrantedAuthority(role));
+
+    /* Para cuando W con DB en la auth
+    // todo role en spring security implementa GrantedAuthority
+    for (GrantedAuthority authority : authorities) {
+      if(role.equals(authority.getAuthority())) {
+        log.info("User ".concat(auth.getName()).concat(" your role is: ").concat(authority.getAuthority()));
+        return true;
+      }
+    }
+    
+    return false;
+     */
+  }
   
 }
