@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<!-- xmlns:sec  -  para W con spring security en thymeleaf -->
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
   <head th:fragment="head">
     <meta charset="UTF-8" />
 
@@ -28,16 +32,47 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div
+          class="collapse navbar-collapse d-flex justify-content-between"
+          id="navbarNav"
+        >
           <ul class="navbar-nav">
             <li class="nav-item active">
-              <a class="nav-link" href="#"
-                >Home
-                <span class="sr-only">(current)</span>
-              </a>
+              <a class="nav-link" href="#">Home </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" th:href="@{/listar}">Clientes</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li sec:authorize="!isAuthenticated()">
+              <a th:href="@{/login}" class="btn btn-outline-primary">Sign In</a>
+            </li>
+            <li class="dropdown" sec:authorize="isAuthenticated()">
+              <a
+                class="btn btn-secondary dropdown-toggle px-3"
+                href="#"
+                role="button"
+                id="dropdownMenuLink"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                sec:authentication="name"
+                style="text-transform: capitalize"
+              >
+              </a>
+
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <!-- log out con token csrf de forma segura -->
+                <form id="logoutForm" th:action="@{/logout}" method="post">
+                  <button
+                    onclick="document.querySelector('#logoutForm').submit();"
+                    type="submit"
+                    class="dropdown-item"
+                  >
+                    Sign Out
+                  </button>
+                </form>
+              </ul>
             </li>
           </ul>
         </div>
@@ -71,6 +106,16 @@
     <footer th:fragment="footer" class="container">
       <hr />
       <img th:src="@{/images/spring.png}" alt="Spring logo" />
+
+      <!-- Lo muestra solo SI esta Auth -->
+      <p sec:authorize="isAuthenticated()" style="margin-top: 1rem">
+        Logged user:
+        <span
+          sec:authentication="name"
+          style="text-transform: capitalize"
+        ></span>
+        | Roles: <span sec:authentication="principal.authorities"></span>
+      </p>
       <p>
         Powered by
         <a

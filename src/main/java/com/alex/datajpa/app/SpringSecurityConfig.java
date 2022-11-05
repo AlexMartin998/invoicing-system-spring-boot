@@ -39,13 +39,17 @@ public class SpringSecurityConfig {
                 .antMatchers("/ver/**").hasAnyRole("USER")
                 .antMatchers("/uploads/**").hasAnyRole("USER")
                 .antMatchers("/form/**").hasAnyRole("ADMIN")
-                .antMatchers("/eliminar/**").hasAnyRole("ADMIN")
-                .antMatchers("/factura/**").hasAnyRole("ADMIN")
-                .anyRequest().authenticated().and()
-                .formLogin().permitAll() // envia la pag login cuando no esta auth
+                .antMatchers("/delete/**").hasAnyRole("ADMIN")
+                .antMatchers("/invoice/**").hasAnyRole("ADMIN")
+                .anyRequest().authenticated()
                 .and()
-                .logout().permitAll();
-        ;
+                // .formLogin().permitAll() // envia la pag login de spring security cuando no esta auth
+                .formLogin().loginPage("/login").permitAll() // la manejamos nosotros con nuestro login controller
+                .and()
+                .logout().permitAll()
+                .and()
+                .exceptionHandling().accessDeniedPage("/error-403")    // manejamos la pagina de error
+                ;
 
         return http.build();
     }
