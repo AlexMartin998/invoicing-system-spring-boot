@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymleaf.org">
+  <!-- Usar el fragment del layout con Thymeleaf ||  el root de las view es /templates -->
+  <head th:replace="layout/layout :: head"></head>
+
+  <body>
+    <script type="text/javascript" th:fragment="javascript">
+      $(document).ready(function () {
+        $('#searchProduct').autocomplete({
+          // hace al peticion y obtiene los datos
+          source: function (request, response) {
+            $.ajax({
+              url: '/invoice/load-products/' + request.term,
+              dataType: 'json',
+              data: {
+                term: request.term,
+              },
+              success: function (data) {
+                response(
+                  $.map(data, function (item) {
+                    return {
+                      value: item.id,
+                      label: item.name,
+                      price: item.price,
+                    };
+                  })
+                );
+              },
+            });
+          },
+
+          // hace algo con los datos
+          select: function (event, ui) {
+            //$('#searchProduct').val(ui.item.label); // lo coloca en el input
+
+            const id = +ui.item.value,
+              price = +ui.item.price;
+
+            // // crear la liea a partir de la plantilla-tems.html
+            if (itemsHelper.hasProduct(id)) {
+              itemsHelper.increaseQuantity(id, price);
+              return false;
+            }
+
+            let linea = $('#templateInvoiceItems').html();
+
+            linea = linea.replace(/{ID}/g, id);
+            linea = linea.replace(/{NAME}/g, ui.item.label);
+            linea = linea.replace(/{PRICE}/g, price);
+
+            // agregar esta linea a loadProductItems  - la linea es tr del tbody
+            $('#loadProductItems tbody').append(linea);
+
+            itemsHelper.calcAmount(id, price, 1);
+
+            return false;
+          },
+        });
+
+
+        // al hacer submit eliminamos para no tener erro con el id al insertar en DB
+        $("form").submit(function() {
+          $("#templateInvoiceItems").remove();
+          return;
+        })
+      });
+
+      const itemsHelper = {
+        calcAmount: function (id, price, quantity) {
+          $('#total_amount_' + id).html(price * quantity);
+
+          // calcular el total cada vez q cambia el amount de c/line
+          this.calcGrandTotal();
+        },
+        hasProduct: function (id) {
+          let result = false;
+          $("input[name='item_id[]']").each(function () {
+            if (id == +$(this).val()) {
+              result = true;
+            }
+          });
+
+          return result;
+        },
+        increaseQuantity: function (id, price) {
+          let quantity = +$('#quantity_' + id).val() || 0;
+
+          $('#quantity_' + id).val(++quantity);
+          this.calcAmount(id, price, quantity);
+        },
+        deleteProductItem: function (id) {
+          $('#row_' + id).remove();
+          this.calcGrandTotal();
+        },
+        calcGrandTotal: function () {
+          let total = 0;
+
+          $('span[id^="total_amount_"]').each(function () {
+            total += parseInt($(this).html());
+          });
+          console.log(total);
+          $('#grand_total').html(total);
+        },
+      };
+    </script>
+  </body>
+</html>

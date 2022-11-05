@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+  <head th:replace="layout/layout :: head"></head>
+  <body>
+    <!-- header fragment -->
+    <header th:replace="layout/layout :: header"></header>
+
+    <div class="container my-5 py-4">
+      <div class="card">
+        <div class="card-header"><h1 th:text="${title}"></h1></div>
+
+        <div class="card-body">
+          <a th:href="@{/form}" class="btn btn-primary btn-xs mt-2 mb-4"
+            >Crear client [+]</a
+          >
+
+          <table class="table table-striped">
+            <thead class="table-dark">
+              <tr>
+                <th>id</th>
+                <th>name</th>
+                <th>lastname</th>
+                <th>email</th>
+                <th>created at</th>
+                <th>create invoice</th>
+                <th>update</th>
+                <th>delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- client.id  gracias al  getId() -->
+              <tr th:each="client: ${clients}">
+                <td>
+                  <a
+                    th:href="@{/ver/} + ${client.id}"
+                    th:text="${client.id}"
+                    class="btn btn-secondary btn-xs"
+                  ></a>
+                </td>
+
+                <td th:text="${client.name}"></td>
+                <td th:text="${client.lastname}"></td>
+                <td th:text="${client.email}"></td>
+                <td th:text="${client.createdAt}"></td>
+
+                <!-- Add new invoice -->
+                <td>
+                  <a
+                    th:href="@{/invoice/form/} + ${client.id}"
+                    class="btn btn-light btn-xs border"
+                    >Create invoice</a
+                  >
+                </td>
+
+                <!-- update -->
+                <td>
+                  <a
+                    th:href="@{/form/} + ${client.id}"
+                    class="btn btn-success btn-xs"
+                    >Update</a
+                  >
+                </td>
+                <!-- delete -->
+                <td>
+                  <a
+                    th:href="@{/delete/} + ${client.id}"
+                    class="btn btn-danger btn-xs"
+                    onclick="return confirm('Esta seguro de querer eliminar?')"
+                    >Delete</a
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- pagination -->
+          <nav th:replace="paginator-nav :: paginator"></nav>
+        </div>
+      </div>
+    </div>
+
+    <!-- footer fragment -->
+    <footer th:replace="layout/layout :: footer"></footer>
+  </body>
+</html>

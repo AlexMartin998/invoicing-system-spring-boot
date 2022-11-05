@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymleaf.org">
+  <!-- Usar el fragment del layout con Thymeleaf ||  el root de las view es /templates -->
+  <head th:replace="layout/layout :: head"></head>
+
+  <body>
+    <!-- header fragment -->
+    <header th:replace="layout/layout :: header"></header>
+
+    <div class="container my-5">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+          <h3 th:text="${title}"></h3>
+          <a
+            th:href="@{'/ver/' + ${invoice.client.id}}"
+            class="btn btn-secondary"
+            th:text="'&laquo; go back'"
+          >
+          </a>
+        </div>
+        <div class="card-body">
+          <!-- th:objext del @SessionAttributes q pasa el controller -->
+          <form
+            th:action="@{/invoice/form}"
+            method="post"
+            th:object="${invoice}"
+          >
+            <div class="form-group row mt-2 mb-3">
+              <label
+                for="client"
+                class="col-sm-2 col-form-label"
+                th:text="'Client'"
+              ></label>
+              <div class="col-sm-6">
+                <input
+                  name="client"
+                  th:value="${invoice.client.name} + ' ' + ${invoice.client.lastname}"
+                  class="form-control"
+                  disabled="disabled"
+                />
+              </div>
+            </div>
+
+            <div class="form-group row mt-2 mb-3">
+              <label for="description" class="col-sm-2 col-form-label"
+                >Description</label
+              >
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  th:field="*{description}"
+                  class="form-control"
+                  th:errorclass="'form-control is-invalid'"
+                />
+                <div
+                  class="invalid-feedback"
+                  th:if="${#fields.hasErrors('description')}"
+                  th:errors="*{description}"
+                ></div>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label
+                for="observation"
+                class="col-sm-2 col-form-label"
+                th:text="'Observación'"
+              ></label>
+              <div class="col-sm-6">
+                <textarea
+                  th:field="*{observation}"
+                  class="form-control"
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- Buscar -->
+            <div class="form-group row mt-2 mb-3">
+              <label for="searchProduct" class="col-sm-2 col-form-label"
+                >Search product</label
+              >
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  name="searchProduct"
+                  id="searchProduct"
+                  class="form-control"
+                />
+              </div>
+            </div>
+
+            <!-- fragment invoice items -->
+            <table th:replace="invoice/plantilla-items :: invoiceItems"></table>
+
+            <!-- tabla q llenaremos con jqeury -->
+            <table
+              id="loadProductItems"
+              class="table table-sm table-striped table-hover"
+            >
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                  <th>Delete</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- se inject con jquery desde autocomple-prod usando la plantilla-items q generan el tr del tbody -->
+              </tbody>
+            </table>
+
+            <h5 class="alert alert-info mt-3 mb-5">
+              Total:
+              <span id="grand_total">0</span>
+            </h5>
+
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <input
+                  type="submit"
+                  th:value="${'Create invoice'}"
+                  class="btn btn-primary"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- footer fragment -->
+    <footer th:replace="layout/layout :: footer"></footer>
+    <!-- autocomplete -->
+    <script
+      th:replace="invoice/js/autocomplete-products :: javascript"
+    ></script>
+  </body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+  <!-- Usar el fragment del layout con Thymeleaf ||  el root de las view es /templates -->
+  <head th:replace="layout/layout :: head"></head>
+  <body>
+    <!-- header fragment -->
+    <header th:replace="layout/layout :: header"></header>
+
+    <div class="container my-5">
+      <!-- Todos los errores de 1 sola -->
+      <div th:object="${client}" th:remove="tag">
+        <ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+          <li th:each="err: ${#fields.errors('*')}" th:text="${err}"></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h1 th:text="${title}"></h1></div>
+        <div class="card-body">
+          <!-- Subir archivos: enctype="multipart/form-data" -->
+          <form
+            th:action="@{/form}"
+            method="post"
+            th:object="${client}"
+            enctype="multipart/form-data"
+          >
+            <div class="form-group row">
+              <label class="col-form-label col-sm-2" for="name">Name</label>
+              <div class="row col-sm-2">
+                <!-- th:field="*{name}" va a poblar la data a enviar -->
+                <input type="text" id="name" th:field="*{name}" />
+              </div>
+              <div
+                class="alert alert-danger"
+                th:if="${#fields.hasErrors('name')}"
+                th:errors="*{name}"
+                style="color: red"
+              ></div>
+            </div>
+            <div class="form-group row">
+              <label class="col-form-label col-sm-2" for="lastname"
+                >Lastname</label
+              >
+              <div class="row col-sm-2">
+                <input type="text" id="lastname" th:field="*{lastname}" />
+              </div>
+              <div
+                class="alert alert-danger"
+                th:if="${#fields.hasErrors('lastname')}"
+                th:errors="*{lastname}"
+                style="color: red"
+              ></div>
+            </div>
+            <div class="form-group row">
+              <label class="col-form-label col-sm-2" for="email">Email</label>
+              <div class="row col-sm-2">
+                <input type="email" id="email" th:field="*{email}" />
+              </div>
+              <div
+                class="alert alert-danger"
+                th:if="${#fields.hasErrors('email')}"
+                th:errors="*{email}"
+                style="color: red"
+              ></div>
+            </div>
+            <div class="form-group row">
+              <label class="col-form-label col-sm-2" for="createdAt"
+                >Created at</label
+              >
+              <div class="row col-sm-2">
+                <input type="date" id="createdAt" th:field="*{createdAt}" />
+              </div>
+              <div
+                class="alert alert-danger"
+                th:if="${#fields.hasErrors('createdAt')}"
+                th:errors="*{createdAt}"
+                style="color: red"
+              ></div>
+            </div>
+
+            <div class="form-group row">
+              <label for="file" class="col-sm-2 col-form-label">Photo</label>
+              <div class="col-sm-6">
+                <input type="file" name="file" class="form-control" />
+              </div>
+            </div>
+
+            <!-- <input type="hidden" th:field="*{id}" /> -->
+
+            <div class="form-group row">
+              <div class="col-sm-4">
+                <input
+                  type="submit"
+                  th:value="${id != null && id > 0 ? 'Update' : 'Create'}"
+                  class="btn btn-primary"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- footer fragment -->
+    <footer th:replace="layout/layout :: footer"></footer>
+  </body>
+</html>
