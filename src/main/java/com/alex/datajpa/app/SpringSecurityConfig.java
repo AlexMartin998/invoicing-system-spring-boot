@@ -3,6 +3,7 @@ package com.alex.datajpa.app;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,6 +15,7 @@ import com.alex.datajpa.app.auth.handler.LoginSuccessHandler;
 
 // // W en memoria, NO a production
 // en la version actualizada de spring boot ya NO extends de ...Adapter q esta deprecated
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)  // habilitar la seguridad/persmisos x Annotations en el controller
 @Configuration
 public class SpringSecurityConfig {
 
@@ -43,10 +45,14 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests().antMatchers("/", "/css/**", "/js/**", "/images/**", "/listar").permitAll()
+                /* Forma programatica, colocamos a mano las rutas y el role q tendra acceso
+                // Se le pude dar Seguridad directamente en el Controller con  @Secured("ROLE")
                 .antMatchers("/ver/**").hasAnyRole("USER")
                 .antMatchers("/uploads/**").hasAnyRole("USER")
                 .antMatchers("/form/**").hasAnyRole("ADMIN")
                 .antMatchers("/delete/**").hasAnyRole("ADMIN")
+                .antMatchers("/invoice/**").hasAnyRole("ADMIN")
+                 */
                 .antMatchers("/invoice/**").hasAnyRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()

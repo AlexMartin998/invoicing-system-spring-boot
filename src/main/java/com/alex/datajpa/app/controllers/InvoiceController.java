@@ -26,6 +26,9 @@ import com.alex.datajpa.app.models.entity.InvoiceItem;
 import com.alex.datajpa.app.models.entity.Product;
 import com.alex.datajpa.app.models.services.IClientService;
 
+
+// @Secured("ROLE_ADMIN")    // se aplica a todos los handlers de este controller  -- Me da error al protegerla asi
+// @PreAuthorize("hasRole('ROLE_ADMIN')")       // igual me da error - lo mismo q el @Secured
 @Controller
 @RequestMapping("/invoice")
 @SessionAttributes("invoice") // mantener en session y pasar a la view hasta q se persista la factura
@@ -36,7 +39,6 @@ public class InvoiceController {
 
     // logs
     private final Logger log = LoggerFactory.getLogger(getClass());
-
 
 
     @GetMapping("/ver/{id}")
@@ -121,7 +123,6 @@ public class InvoiceController {
 
         return "redirect:/ver/" + invoice.getClient().getId();
     }
-
 
 
     @GetMapping("/delete/{id}")

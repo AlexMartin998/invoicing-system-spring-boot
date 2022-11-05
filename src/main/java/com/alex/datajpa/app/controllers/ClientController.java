@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -61,6 +63,7 @@ public class ClientController {
   
 
   // trae la img - No requiere MvcConfig.java
+  @Secured("ROLE_USER")   // permisos directamente en el controller
   @GetMapping("/uploads/{filename:.+}") // :.+ para q NO omita la extension
   public ResponseEntity<Resource> getPhoto(@PathVariable String filename) {
 
@@ -79,6 +82,8 @@ public class ClientController {
 
 
   // get photo
+  @Secured({"ROLE_USER", "ROLE_OTRO-ROLE"})   // arreglo de roles
+  // @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OTHER')") // otra forma de proteger con un arreglo de roles
   @GetMapping(value = "/ver/{id}")
   public String ver(@PathVariable Long id, Model model, RedirectAttributes flash) { //@PathVariable mismo name omite value
     Client client = clientService.fetchByIdWithInvoices(id);
@@ -93,6 +98,7 @@ public class ClientController {
 
     return "ver";
   }
+
 
   @GetMapping({ "/listar", "" })
   public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model,
@@ -142,6 +148,8 @@ public class ClientController {
     return "listar";
   }
 
+  
+  @Secured("ROLE_ADMIN")  // segirudad directamente en el controller
   @GetMapping(value = "/form")
   public String crear(Model model) {
     Client client = new Client();
@@ -155,6 +163,7 @@ public class ClientController {
 
   // @Valid y BindingResult (se inyecta en auto x Valid) deben estar juntos --
   // RedirectAttributes para pasar msg -- MultipartFile para capturar el file
+  @Secured("ROLE_ADMIN")  // segirudad directamente en el controller
   @PostMapping("/form")
   public String save(@Valid Client client, BindingResult result, Model model, @RequestParam("file") MultipartFile photo,
       RedirectAttributes flash,
@@ -200,6 +209,9 @@ public class ClientController {
     return "redirect:/listar";
   }
 
+  
+  // @Secured("ROLE_ADMIN")  // segirudad directamente en el controller
+  @PreAuthorize("hasRole('ROLE_ADMIN')")  // otra forma de proteger
   @GetMapping("/form/{id}")
   public String update(@PathVariable Long id, Model model, RedirectAttributes flash) {
     Client client = null;
@@ -225,6 +237,7 @@ public class ClientController {
   }
 
 
+  @Secured("ROLE_ADMIN")  // segirudad directamente en el controller
   @GetMapping(value = "/delete/{id}")
   public String delete(@PathVariable Long id, RedirectAttributes flash) {
 
