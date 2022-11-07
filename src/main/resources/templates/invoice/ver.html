@@ -17,6 +17,9 @@
             th:text="'&laquo; go back'"
           >
           </a>
+
+          <!-- ver en pdf - necesita el format como parameter -->
+          <a th:href="@{'/invoice/ver/' + ${invoice.id}(format=pdf)}" class="btn btn-danger btn-xs">PDF</a>
         </div>
 
         <div class="card-body">

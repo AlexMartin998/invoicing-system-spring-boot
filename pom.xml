@@ -68,6 +68,18 @@
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
 		</dependency>
+
+
+		<!-- OpenPDF -->
+		<dependency>
+  			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+			<!-- Version recomendada x spring -->
+			<version>1.2.21</version>
+			<!-- <version>1.0.5</version> -->
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
