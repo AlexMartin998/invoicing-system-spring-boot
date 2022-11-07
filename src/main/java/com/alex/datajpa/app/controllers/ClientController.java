@@ -111,14 +111,14 @@ public class ClientController {
   public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model,
       Authentication authentication, HttpServletRequest request, Locale locale) {
 
-    // Paginado:
+    // // Paginado:
     Pageable pageRequest = PageRequest.of(page, 5);
     Page<Client> clients = clientService.getAll(pageRequest);
 
     PageRender<Client> pageRender = new PageRender<>("/listar", clients); // pasamos la url
     model.addAttribute("page", pageRender);
 
-    // title en multilanguages - code: mismo q en properties - locale de java.util
+    // // title en multilanguages - code: mismo q en properties - locale de java.util
     model.addAttribute("title", messageSource.getMessage("text.client.listar.title", null, locale));
     model.addAttribute("clients", clients);
 

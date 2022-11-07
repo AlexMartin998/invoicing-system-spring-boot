@@ -76,11 +76,57 @@
             </li>
 
             <ul class="navbar-nav navbar-right mx-4">
-              <!-- lang  =  localeInterceptor.setParamName("lang"); de MvcConfig -->
+              <!--Multilanguage:  lang  =  localeInterceptor.setParamName("lang"); de MvcConfig -->
               <li class="nav-item mx-1">
-                <a th:href="@{/locale(lang=es_ES)}" class="btn btn-outline-success">ES</a>
-                <a th:href="@{/locale(lang=en_US)}" class="btn btn-outline-success">EN</a>
-                <a th:href="@{/locale(lang=de_DE)}" class="btn btn-outline-success">DE</a>
+                <a
+                  th:href="@{/locale(lang=es_ES)}"
+                  class="btn btn-outline-success"
+                  >ES</a
+                >
+              </li>
+              <li class="nav-item mx-1">
+                <a
+                  th:href="@{/locale(lang=en_US)}"
+                  class="btn btn-outline-success"
+                  >EN</a
+                >
+              </li>
+              <li class="nav-item mx-1">
+                <a
+                  th:href="@{/locale(lang=de_DE)}"
+                  class="btn btn-outline-success"
+                  >DE</a
+                >
+              </li>
+
+              <li class="navigation dropdown show mx-2">
+                <a
+                  class="btn btn-outline-primary dropdown-toggle px-3"
+                  href="#"
+                  role="button"
+                  id="dropdownLanguage"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  style="text-transform: capitalize"
+                  ><span th:text="#{text.locale.language}"></span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  <a
+                    th:href="@{/locale(lang=es_ES)}"
+                    class="dropdown-item"
+                    th:text="#{text.locale.es}"
+                  ></a>
+                  <a
+                    th:href="@{/locale(lang=en_US)}"
+                    class="dropdown-item"
+                    th:text="#{text.locale.en}"
+                  ></a>
+                  <a
+                    th:href="@{/locale(lang=de_DE)}"
+                    class="dropdown-item"
+                    th:text="#{text.locale.de}"
+                  ></a>
+                </div>
               </li>
             </ul>
           </ul>
