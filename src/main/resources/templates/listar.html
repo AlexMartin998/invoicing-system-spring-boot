@@ -24,14 +24,15 @@
           <table class="table table-striped">
             <thead class="table-dark">
               <tr>
+                <!-- Multilenguaje:  th:text="#{text.client.createdAt}" toma los idiomas del message_somethin.properties -->
                 <th sec:authorize="hasRole('ROLE_USER')">id</th>
-                <th>name</th>
-                <th>lastname</th>
-                <th>email</th>
-                <th>created at</th>
-                <th sec:authorize="hasRole('ROLE_ADMIN')">create invoice</th>
-                <th sec:authorize="hasRole('ROLE_ADMIN')">update</th>
-                <th sec:authorize="hasRole('ROLE_ADMIN')">delete</th>
+                <th th:text="#{text.client.name}">name</th>
+                <th th:text="#{text.client.lastname}">lastname</th>
+                <th th:text="#{text.client.email}">email</th>
+                <th th:text="#{text.client.createdAt}">created at</th>
+                <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{text.client.createInvoice}" >create invoice</th>
+                <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{text.client.update}" >update</th>
+                <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{text.client.delete}" >delete</th>
               </tr>
             </thead>
             <tbody>

@@ -28,11 +28,12 @@ import com.alex.datajpa.app.models.services.JpaUserDetailsService;
 @Configuration
 public class SpringSecurityConfig {
 
-    // @Autowired
+    // @Autowired   // para in-memory y JDBC
     // private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     private LoginSuccessHandler successHandler;
+
 
 
     // //  Con JPA
@@ -45,6 +46,7 @@ public class SpringSecurityConfig {
 
         return build.getDefaultUserDetailsService();
     }
+
 
 
 
@@ -118,14 +120,16 @@ public class SpringSecurityConfig {
     
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/", "/css/**", "/js/**", "/images/**", "/listar").permitAll()
-                /* Forma programatica, colocamos a mano las rutas y el role q tendra acceso
-                // Se le pude dar Seguridad directamente en el Controller con  @Secured("ROLE")
-                .antMatchers("/ver/**").hasAnyRole("USER")
-                .antMatchers("/uploads/**").hasAnyRole("USER")
-                .antMatchers("/form/**").hasAnyRole("ADMIN")
-                .antMatchers("/delete/**").hasAnyRole("ADMIN")
-                .antMatchers("/invoice/**").hasAnyRole("ADMIN")
+        http.authorizeRequests().antMatchers("/", "/css/**", "/js/**", "/images/**", "/listar", "/locale").permitAll()
+                /*
+                 * Forma programatica, colocamos a mano las rutas y el role q tendra acceso
+                 * // Se le pude dar Seguridad directamente en el Controller
+                 * con @Secured("ROLE")
+                 * .antMatchers("/ver/**").hasAnyRole("USER")
+                 * .antMatchers("/uploads/**").hasAnyRole("USER")
+                 * .antMatchers("/form/**").hasAnyRole("ADMIN")
+                 * .antMatchers("/delete/**").hasAnyRole("ADMIN")
+                 * .antMatchers("/invoice/**").hasAnyRole("ADMIN")
                  */
                 .antMatchers("/invoice/**").hasAnyRole("ADMIN")
                 .anyRequest().authenticated()

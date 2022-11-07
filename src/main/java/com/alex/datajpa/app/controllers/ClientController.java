@@ -3,6 +3,7 @@ package com.alex.datajpa.app.controllers;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collection;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -10,6 +11,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -62,6 +64,11 @@ public class ClientController {
   private IUploadFileService uploadFileService;
   
 
+  // multilenguaje
+  @Autowired
+  private MessageSource messageSource;
+
+
   // trae la img - No requiere MvcConfig.java
   @Secured("ROLE_USER")   // permisos directamente en el controller
   @GetMapping("/uploads/{filename:.+}") // :.+ para q NO omita la extension
@@ -102,7 +109,7 @@ public class ClientController {
 
   @GetMapping({ "/listar", "" })
   public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model,
-      Authentication authentication, HttpServletRequest request) {
+      Authentication authentication, HttpServletRequest request, Locale locale) {
 
     // Paginado:
     Pageable pageRequest = PageRequest.of(page, 5);
@@ -111,7 +118,8 @@ public class ClientController {
     PageRender<Client> pageRender = new PageRender<>("/listar", clients); // pasamos la url
     model.addAttribute("page", pageRender);
 
-    model.addAttribute("title", "Client List");
+    // title en multilanguages - code: mismo q en properties - locale de java.util
+    model.addAttribute("title", messageSource.getMessage("text.client.listar.title", null, locale));
     model.addAttribute("clients", clients);
 
     

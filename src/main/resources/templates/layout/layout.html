@@ -74,6 +74,15 @@
                 </form>
               </ul>
             </li>
+
+            <ul class="navbar-nav navbar-right mx-4">
+              <!-- lang  =  localeInterceptor.setParamName("lang"); de MvcConfig -->
+              <li class="nav-item mx-1">
+                <a th:href="@{/locale(lang=es_ES)}" class="btn btn-outline-success">ES</a>
+                <a th:href="@{/locale(lang=en_US)}" class="btn btn-outline-success">EN</a>
+                <a th:href="@{/locale(lang=de_DE)}" class="btn btn-outline-success">DE</a>
+              </li>
+            </ul>
           </ul>
         </div>
       </nav>
