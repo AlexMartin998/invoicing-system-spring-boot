@@ -1,4 +1,4 @@
-package com.alex.datajpa.app.view;
+package com.alex.datajpa.app.view.pdf;
 
 import java.awt.Color;
 import java.util.Locale;

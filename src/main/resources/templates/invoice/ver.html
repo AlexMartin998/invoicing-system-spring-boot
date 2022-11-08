@@ -18,8 +18,20 @@
           >
           </a>
 
-          <!-- ver en pdf - necesita el format como parameter -->
-          <a th:href="@{'/invoice/ver/' + ${invoice.id}(format=pdf)}" class="btn btn-danger btn-xs">PDF</a>
+          <div>
+            <!-- ver en pdf - necesita el format como parameter -->
+            <a
+              th:href="@{'/invoice/ver/' + ${invoice.id}(format=pdf)}"
+              class="btn btn-danger btn-xs mx-2"
+              >PDF</a
+            >
+            <!-- exportar/descargar xlsx xq no tiene un viwer como para pdf -->
+            <a
+              th:href="@{'/invoice/ver/' + ${invoice.id}(format=xlsx)}"
+              class="btn btn-success btn-xs"
+              >XLSX</a
+            >
+          </div>
         </div>
 
         <div class="card-body">
