@@ -20,6 +20,13 @@
             class="btn btn-primary btn-xs mt-2 mb-4"
             >Crear client [+]</a
           >
+          
+          <!-- href= ver() del controller Client, format como el data type en la Class ClientCsvView -->
+          <a
+            th:href="@{'/listar'(format=csv)}"
+            class="btn btn-success btn-xs mt-2 mb-4"
+            >CSV</a
+          >
 
           <table class="table table-striped">
             <thead class="table-dark">
@@ -30,9 +37,24 @@
                 <th th:text="#{text.client.lastname}">lastname</th>
                 <th th:text="#{text.client.email}">email</th>
                 <th th:text="#{text.client.createdAt}">created at</th>
-                <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{text.client.createInvoice}" >create invoice</th>
-                <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{text.client.update}" >update</th>
-                <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{text.client.delete}" >delete</th>
+                <th
+                  sec:authorize="hasRole('ROLE_ADMIN')"
+                  th:text="#{text.client.createInvoice}"
+                >
+                  create invoice
+                </th>
+                <th
+                  sec:authorize="hasRole('ROLE_ADMIN')"
+                  th:text="#{text.client.update}"
+                >
+                  update
+                </th>
+                <th
+                  sec:authorize="hasRole('ROLE_ADMIN')"
+                  th:text="#{text.client.delete}"
+                >
+                  delete
+                </th>
               </tr>
             </thead>
             <tbody>
