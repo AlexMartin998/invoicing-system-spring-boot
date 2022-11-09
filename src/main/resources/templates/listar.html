@@ -21,11 +21,18 @@
             >Crear client [+]</a
           >
           
-          <!-- href= ver() del controller Client, format como el data type en la Class ClientCsvView -->
+          <!-- CSV: href= ver() del controller Client, format como el data type en la Class ClientCsvView -->
           <a
             th:href="@{'/listar'(format=csv)}"
             class="btn btn-success btn-xs mt-2 mb-4"
             >CSV</a
+          >
+
+          <!-- XML -->
+          <a
+            th:href="@{'/listar'(format=xml)}"
+            class="btn btn-outline-info btn-xs mt-2 mb-4"
+            >XML</a
           >
 
           <table class="table table-striped">

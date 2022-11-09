@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name = "invoices")   // name se puede omitir si la clase lleva el mismo name en singular
@@ -43,13 +44,15 @@ public class Invoice implements Serializable {
 
     // muchas facturas(many) 1 client(one) -- fetch lazy: solo cuando se le llama con getClient se realiza la consulta del cliente de la factura, asi no sobrecargamos la DB con consultas innecesarias en primera instancia
     @ManyToOne(fetch = FetchType.LAZY)
-    private Client client;
+    private Client client; // relacion Bidireccional con client - en XML da error, un loop infinito - corregir en su get @XmlTransient
+
 
     // 1 factura muchos items -- cascade: si eliminamos 1 factura, q elimine a todos sus hijos InvoiceItem
     // JoinColum() crea la foreing key q las relaciona, se usa xq la relacion NO es en ambos sentidos. Invoice tiene InvoiceItem como attribute, but IncoiceItem NO tiene Invoice como attribute    <--   Relacion unidireccional
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "invoice_id")    // foreing key en la tabal InvoiceItems q las relaciona y es invoice_id
     private List<InvoiceItem> items;
+
 
 
 
@@ -109,6 +112,7 @@ public class Invoice implements Serializable {
         this.createdAt = createdAt;
     }
 
+    @XmlTransient   // evitamos el error del loop infinot xq omite este atributo en la Serializacion ,no lo incluye en el XML
     public Client getClient() {
         return client;
     }

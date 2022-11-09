@@ -27,6 +27,7 @@ public class InvoiceXlsxView extends AbstractXlsxView {
 
 
     @Override
+    @SuppressWarnings("null")  // IDE marca error de potential null pointer exception, but si lo tenemos en las properties
     protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
         

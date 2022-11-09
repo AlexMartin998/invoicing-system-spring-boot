@@ -39,6 +39,7 @@ public class InvoicePdfView extends AbstractPdfView {
     
 
     @Override
+    @SuppressWarnings("null")  // IDE marca potential null pointer exception but si lo tenemso en las props
     protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer,
             HttpServletRequest request, HttpServletResponse response) throws Exception {
         
