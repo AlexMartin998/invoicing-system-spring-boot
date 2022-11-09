@@ -22,6 +22,8 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "invoices")   // name se puede omitir si la clase lleva el mismo name en singular
 public class Invoice implements Serializable {
@@ -44,6 +46,7 @@ public class Invoice implements Serializable {
 
     // muchas facturas(many) 1 client(one) -- fetch lazy: solo cuando se le llama con getClient se realiza la consulta del cliente de la factura, asi no sobrecargamos la DB con consultas innecesarias en primera instancia
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference      // evitar su serializacion x ser bidireccional dara un loop infinito - asi lo solvento SIN ignorar factu
     private Client client; // relacion Bidireccional con client - en XML da error, un loop infinito - corregir en su get @XmlTransient
 
 

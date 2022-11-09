@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "invoice_items")
 public class InvoiceItem implements Serializable {
@@ -25,6 +27,7 @@ public class InvoiceItem implements Serializable {
     // muchos ItemFactura 1 producto
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")    // genera la foreing key product_id en InvoiceItem para relacionar con la tabla product
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})   // corregir el error al serializar a JSON (traer todas las prop)
     private Product product;
 
 

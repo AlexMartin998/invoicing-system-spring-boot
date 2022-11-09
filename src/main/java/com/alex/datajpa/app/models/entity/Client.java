@@ -22,6 +22,10 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 
 
 // // // Mapea las tablas a objects
@@ -52,6 +56,7 @@ public class Client implements Serializable {
   @Column(name = "created_at")   // nombre q tiene en DB esta column
   @Temporal(TemporalType.DATE)  // es temporal, maneja fecha
   @DateTimeFormat(pattern = "yyyy-MM-dd")   // formato del date picker de html
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")  // formato al serializar a JSON
   private Date createdAt;
 
   
@@ -62,6 +67,8 @@ public class Client implements Serializable {
   // Relacion con Factura 1 cliente tiene muchas facturas/invoices   --  fetch: asi no llama a todas las facturas de cada cliente, solo se realiza la consulta a DB con el method getInvoice.   --  cascade: si el cliente se persiste lo va a hacer con todos sus hijos, asi mismo, si se elimina un cliente, se eliminan sus hijos, es decir, sus facturas (elimina los relacionados con foreing key)   --   mappendBy: el mismo attribute del Invoice q se debe mapear <- crea la foreing key client_id en la tabla factura DB
   // mappendBy indica relacion en ambos sentidos xq client tiene factura y factura tiene client como attribute <- Bidireccional
   @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  // @JsonIgnore   // evitar loop infinito al traer las facturas - esto x tener relacion bidireccional entre client q invoice
+  @JsonManagedReference   // establecemos la serializacion en 1 direccion para evitar el loop infinoto SIN ignorar las invoices
   private List<Invoice> invoices;
 
 
