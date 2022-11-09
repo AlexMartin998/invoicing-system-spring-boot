@@ -3,6 +3,7 @@ package com.alex.datajpa.app.controllers;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +44,7 @@ import com.alex.datajpa.app.models.entity.Client;
 import com.alex.datajpa.app.models.services.IClientService;
 import com.alex.datajpa.app.models.services.IUploadFileService;
 import com.alex.datajpa.app.util.paginator.PageRender;
+import com.alex.datajpa.app.view.xml.ClientList;
 
 
 
@@ -155,6 +158,26 @@ public class ClientController {
 
     return "listar";
   }
+
+
+
+  
+  // // // // API Rest handler - NO retorna una view como los demas, retorna directamente un JSON
+  // Debe retornar un objeto simple de Java (POJO), un entity con setters/getters o un Java bean
+  @GetMapping("/listar-rest")
+  @ResponseBody // return de este method se alamcena en el Body de la Response y Spring lo serializa a REST
+  // public List<Client> listarRest() {  // solo JSON
+  public ClientList listarRest() {    // ambos, xml x default y JSON tb como param =  listar-rest?format=json
+
+    // return clientService.getAll(); // solo soporte a JSON
+    return new ClientList(clientService.getAll());    // sporta xml y json xq ambos son respuestas REST
+  }
+
+
+
+
+
+
 
   
   @Secured("ROLE_ADMIN")  // segirudad directamente en el controller

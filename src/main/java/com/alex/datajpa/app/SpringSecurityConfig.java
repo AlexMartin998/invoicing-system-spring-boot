@@ -120,7 +120,9 @@ public class SpringSecurityConfig {
     
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/", "/css/**", "/js/**", "/images/**", "/listar", "/locale").permitAll()
+        http.authorizeRequests()
+                .antMatchers("/", "/css/**", "/js/**", "/images/**", "/listar**", "/locale", "/api/clients/**")
+                .permitAll()
                 /*
                  * Forma programatica, colocamos a mano las rutas y el role q tendra acceso
                  * // Se le pude dar Seguridad directamente en el Controller
